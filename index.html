@@ -14,10 +14,22 @@
     <style>
         body {
             font-family: 'Noto Sans TC', sans-serif;
-            background: radial-gradient(circle at center, #1e3a8a 0%, #020617 100%);
+            /* 背景調整為深色系 */
+            background: #0f172a; 
             min-height: 100vh;
             overflow-x: hidden;
-            overscroll-behavior-y: none; /* 防止 iOS 橡皮筋效果 */
+            overscroll-behavior-y: none;
+        }
+        /* 新增：頂部抬頭樣式 */
+        .header-banner {
+            background: rgba(30, 58, 138, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
         }
         .glass-card {
             background: rgba(255, 255, 255, 0.05);
@@ -37,6 +49,10 @@
             border-color: #3b82f6;
             outline: none;
             box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+        }
+        /* 自定義 Checkbox 樣式 */
+        .custom-checkbox {
+            accent-color: #3b82f6;
         }
         .paper-ui {
             background-color: #ffffff;
@@ -107,16 +123,22 @@
         .paren-list { list-style: none; padding-left: 1.5rem; margin-top: 0.5rem; }
         .paren-list li::before { content: counter(list-item) ") "; margin-right: 0.5rem; }
         .paren-list li { counter-increment: list-item; }
+        /* 調整主容器位置，避免被 Header 擋住 */
+        .main-container { padding-top: 80px; }
     </style>
 </head>
 <body class="flex items-center justify-center p-4">
+
+    <div class="header-banner w-full p-4 text-center text-white tracking-wider font-medium shadow-md">
+        翻譯泡芙學院 | 苑程有限公司
+    </div>
 
     <div id="loadingOverlay" class="loading-overlay">
         <span class="loader mb-4"></span>
         <p class="text-white text-lg tracking-widest font-light">正在加密傳輸...</p>
     </div>
 
-    <div class="w-full max-w-3xl relative">
+    <div class="w-full max-w-3xl relative main-container">
         <div id="step1" class="glass-card rounded-2xl p-8 md:p-10 fade-in">
             <div class="text-center mb-8">
                 <h1 class="text-3xl font-bold text-white mb-2 tracking-wide">保密協議簽署</h1>
@@ -124,14 +146,26 @@
             </div>
             <form id="infoForm" class="space-y-6">
                 <div>
-                    <label class="block text-blue-200 text-sm mb-2">姓名 (Name)</label>
+                    <label class="block text-blue-200 text-sm mb-2">
+                        姓名 (Name) 
+                        <span class="text-blue-400 text-xs ml-2 font-light">(範例：王大明，僅限中英文)</span>
+                    </label>
                     <input type="text" id="inputName" maxlength="20" required class="glass-input w-full px-4 py-3 rounded-lg text-lg" placeholder="請輸入真實姓名">
                 </div>
+
                 <div>
-                    <label class="block text-blue-200 text-sm mb-2">身分證字號 (ID Number)</label>
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="block text-blue-200 text-sm">身分證字號 (ID Number)</label>
+                        <label class="flex items-center text-blue-300 text-xs cursor-pointer hover:text-blue-100 transition">
+                            <input type="checkbox" id="isOverseas" class="custom-checkbox mr-2 w-4 h-4 rounded border-gray-500 bg-gray-700 focus:ring-offset-gray-800 focus:ring-2">
+                            海外人士 (無台灣身分證)
+                        </label>
+                    </div>
+                    
                     <input type="text" id="inputID" maxlength="10" required class="glass-input w-full px-4 py-3 rounded-lg text-lg uppercase" placeholder="A123456789">
-                    <p id="idError" class="text-red-400 text-xs mt-1 hidden"><i class="fas fa-exclamation-circle"></i> 身分證字號錯誤</p>
+                    <p id="idError" class="text-red-400 text-xs mt-1 hidden"><i class="fas fa-exclamation-circle"></i> 身分證字號格式錯誤</p>
                 </div>
+                
                 <div>
                     <label class="block text-blue-200 text-sm mb-2">聯絡電話 (Phone)</label>
                     <input type="tel" id="inputPhone" maxlength="12" required class="glass-input w-full px-4 py-3 rounded-lg text-lg" placeholder="09xx-xxx-xxx">
@@ -162,10 +196,15 @@
                 <p>鑑於甲方向乙方提供有關翻譯泡芙學院相關課程及相關服務，為確保雙方合作的順利進行，特此達成以下條款：</p>
                 
                 <div class="pl-2 space-y-4">
-                    <div><strong>1. 定義：</strong><ol class="contract-list"><li>「機密資訊」指甲方提供的所有與課程相關的資料...</li></ol></div>
+                    <div><strong>1. 定義：</strong><ol class="contract-list"><li>「機密資訊」指甲方提供的所有與課程相關的資料、知識、技術、教材、策略、數據及其他信息，無論其形式為何，包括但不限於電子文件、紙本資料、錄音錄影內容等。</li><li>「提供方」指在本協議中提供機密資訊的一方。</li><li>「接受方」指在本協議中接受機密資訊的一方。</li></ol></div>
                     <div><strong>2. 保密期間：</strong><p class="pl-6 mb-2">本協議之保密義務自簽署日起生效，並在課程結束後持續三年有效。</p></div>
-                    <div><strong>3. 機密資訊的使用及保護：</strong><ol class="contract-list"><li>乙方承諾，僅限於課程學習範圍內使用甲方提供的機密資訊...</li></ol></div>
-                    <div><strong>9. 其他規定：</strong><ol class="contract-list"><li>甲乙雙方因本協議所產生之爭議，同意以臺灣臺北地方法院為第一審管轄法院。</li></ol></div>
+                    <div><strong>3. 機密資訊的使用及保護：</strong><ol class="contract-list"><li>乙方承諾，僅限於課程學習範圍內使用甲方提供的機密資訊，不得將其以任何形式洩露、分享或傳播給任何第三方。</li><li>乙方不得將甲方提供的機密資訊用於任何商業用途，亦不得於任何平台或公開場合擅自揭露。</li><li>乙方應採取以下保密措施，以保護甲方機密資訊：<ol class="paren-list"><li>不得將資料存儲於非安全設備上（如公用電腦、未加密的雲端資料夾）。</li><li>不得對課程內容進行螢幕錄影等任何形式的記錄。</li></ol></li></ol></div>
+                    <div><strong>4. 智慧財產權：</strong><ol class="contract-list"><li>甲方提供的課程教材、講義及其他相關資料，均屬甲方或相關取得授權方之智慧財產權。</li><li>未經甲方書面授權，乙方不得擅自複製、傳播或銷售任何課程相關內容。</li></ol></div>
+                    <div><strong>5. 違約責任：</strong><ol class="contract-list"><li>若乙方違反本協議第三條、第四條之相關規定，致使甲方利益受損，甲方除有權要求乙方停止侵權行為外，乙方應支付懲罰性違約金，懲罰性違約金金額以課程總費用的20倍為準。</li><li>除支付前開違約金外，乙方仍需賠償甲方因違約行為導致的實際損失金額，包括但不限於商譽損害及經濟損失。</li><li>如乙方違反本協議規定，甲方有權立即取消乙方的課程資格，並不予退還已支付的任何費用。</li></ol></div>
+                    <div><strong>6. 免責聲明條款：</strong><p class="pl-6 mb-2">甲方提供的課程內容僅供學術交流和教育用途，所有涉及的投資策略、案例及分析僅供參考，不構成法律、稅務、財務或任何形式之專業建議。乙方應依據自身的判斷和專業諮詢作出決策，並充分了解投資具有風險，包括但不限於資本損失、收益波動、政策變動及市場不可控因素（如市場崩盤、經濟環境惡化等）。甲方提供的課程內容、數據及資訊均基於當前市場條件和可得資訊，僅作為教學示範，不保證未來的投資收益或結果。乙方基於課程內容或甲方言論所作出的任何投資決策均為其自主行為，應自行承擔獲利虧損，甲方不因此負擔任何法律、經濟、賠償或補償等責任，乙方自不得以課程內容或甲方言論作為對其投資行為進行合理性辯護之依據。</p></div>
+                    <div><strong>7. 肖像權使用條款：</strong><ol class="contract-list"><li>乙方同意並無償授權甲方於課程期間拍攝並使用乙方之肖像、姓名及聲音，並得進行必要之修飾或公開展示。甲方可將相關素材運用於官方網站、社群媒體、課程宣傳、廣告等形式的媒體與著作載體中，作為推廣及相關用途。</li><li>前述素材之著作權及相關智慧財產權歸屬於甲方，甲方有權依本條款進行後續利用，惟應遵守以下規範：<ol class="paren-list"><li>素材之使用須符合善良風俗，不得涉及違法或損害公共秩序之行為。</li><li>不得以任何形式損害乙方之名譽、形象或人格權益。</li></ol></li><li>乙方確認本授權為無償且不可撤回，並同意甲方於合理範圍內進行素材使用，不另行主張報酬或其他權益。</li></ol></div>
+                    <div><strong>8. 退費條款：</strong><p class="pl-6 mb-2">甲方所提供之課程或服務之退費悉依翻譯泡芙學院「退費辦法」辦理，乙方已閱覽並同意依該辦法進行退費。</p></div>
+                    <div><strong>9. 其他規定：</strong><ol class="contract-list"><li>甲乙雙方因本協議所產生之爭議，應先以協商方式解決，如未能解決者，同意以中華民國法律作為適用法，並以臺灣臺北地方法院為第一審管轄法院。</li><li>本協議之修改或補充應經雙方書面同意，方可生效。</li><li>若本協議中的任何條款被視為無效或不可執行，其餘條款仍具有完全效力。</li><li>本協議壹式貳份，由甲、乙雙方各執乙份為憑。</li></ol></div>
                 </div>
 
                 <div class="text-center font-bold my-8">【以下無協議內容】</div>
@@ -179,6 +218,8 @@
                             <p class="font-bold text-lg mb-2">苑程有限公司</p>
                             <p>法定代理人：謝宜潔</p>
                             <p>統一編號：93557869</p>
+                            <p>電話：02-2311-0668</p>
+                            <p>地址：臺北市萬華區中華路1段170號5樓</p>
                         </div>
                     </div>
                     <div class="w-full pl-4">
@@ -218,7 +259,7 @@
     </div>
 
     <script>
-        // 設定後端 API (已經換成你的新 GAS 網址)
+        // 設定後端 API (使用你提供的網址)
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz56e4ABihWISL9Y78Drc9yhw84OsSr0GCZZZPYq3adS3_T3OLbRIKGbQ2OBLDxAr6Y/exec";
         
         // 暫時還沒有 LIFF ID，先留空，等上傳後拿到網址再去申請
@@ -229,9 +270,10 @@
             if (MY_LIFF_ID && typeof liff !== 'undefined') {
                 liff.init({ liffId: MY_LIFF_ID }).catch(err => console.error(err));
             }
-            // 設定日期
             const today = new Date();
-            // 如果頁面上有這些元素才設定 (這裡簡化版可能沒放日期span，若有需要可加回)
+            document.getElementById('rocYear').textContent = today.getFullYear() - 1911;
+            document.getElementById('rocMonth').textContent = today.getMonth() + 1;
+            document.getElementById('rocDay').textContent = today.getDate();
         };
 
         // DOM 元素
@@ -241,6 +283,9 @@
         const backBtn = document.getElementById('backBtn');
         const addressInput = document.getElementById('addressInput');
         const finalSubmitBtn = document.getElementById('finalSubmitBtn');
+        // 新增：獲取身分證輸入框和海外勾選框元素
+        const inputID = document.getElementById('inputID');
+        const isOverseasCheckbox = document.getElementById('isOverseas');
         
         // 簽名板
         const canvas = document.getElementById('signatureCanvas');
@@ -258,7 +303,7 @@
         }
         window.addEventListener("resize", resizeCanvas);
 
-        // 驗證邏輯
+        // 台灣身分證驗證邏輯
         function validateID(id) {
             if (!/^[A-Z][1-2]\d{8}$/.test(id)) return false;
             const map = {A:10,B:11,C:12,D:13,E:14,F:15,G:16,H:17,J:18,K:19,L:20,M:21,N:22,P:23,Q:24,R:25,S:26,T:27,U:28,V:29,X:30,Y:31,W:32,Z:33,I:34,O:35};
@@ -268,31 +313,70 @@
             return (sum + d[8]) % 10 === 0;
         }
 
+        // 新增：監聽「海外人士」勾選框變化
+        isOverseasCheckbox.addEventListener('change', (e) => {
+            // 清空目前的輸入值和錯誤訊息
+            inputID.value = '';
+            document.getElementById('idError').classList.add('hidden');
+            
+            if (e.target.checked) {
+                // 勾選：切換為海外模式
+                inputID.placeholder = "請輸入護照或其他證件號碼";
+                inputID.classList.remove('uppercase'); // 移除強制大寫
+                inputID.removeAttribute('maxlength');   // 移除長度限制
+            } else {
+                // 取消勾選：恢復台灣身分證模式
+                inputID.placeholder = "A123456789";
+                inputID.classList.add('uppercase');    // 加回強制大寫
+                inputID.setAttribute('maxlength', '10'); // 加回 10 碼限制
+            }
+        });
+
         document.getElementById('inputPhone').addEventListener('input', (e) => {
             let val = e.target.value.replace(/\D/g, '');
             if (val.length > 10) val = val.slice(0, 10);
             e.target.value = val.length > 7 ? val.slice(0,4)+'-'+val.slice(4,7)+'-'+val.slice(7) : (val.length > 4 ? val.slice(0,4)+'-'+val.slice(4) : val);
         });
 
-        // 流程切換
+        document.getElementById('inputName').addEventListener('input', function(e) {
+             this.value = this.value.replace(/[^\u4e00-\u9fa5a-zA-Z\s]/g, '');
+        });
+
+        // 流程切換 (表單送出)
         infoForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const name = document.getElementById('inputName').value.trim();
-            const id = document.getElementById('inputID').value.trim().toUpperCase();
+            // 根據是否勾選海外，決定是否將 ID 轉大寫
+            const idRaw = document.getElementById('inputID').value.trim();
+            const id = isOverseasCheckbox.checked ? idRaw : idRaw.toUpperCase();
             const phone = document.getElementById('inputPhone').value.trim();
             const email = document.getElementById('inputEmail').value.trim();
 
-            if (!validateID(id)) { document.getElementById('idError').classList.remove('hidden'); return; }
-            document.getElementById('idError').classList.add('hidden');
+            // 驗證身分證
+            // 修改：只有在「沒有」勾選海外人士時，才進行嚴格驗證
+            if (!isOverseasCheckbox.checked) {
+                if (!validateID(id)) { 
+                    document.getElementById('idError').classList.remove('hidden'); 
+                    return; 
+                }
+                document.getElementById('idError').classList.add('hidden');
+            } else {
+                // 確保海外模式下，錯誤訊息是隱藏的
+                document.getElementById('idError').classList.add('hidden');
+            }
+
+            // 驗證手機
             if (!/^09\d{8}$/.test(phone.replace(/-/g,''))) { document.getElementById('phoneError').classList.remove('hidden'); return; }
             document.getElementById('phoneError').classList.add('hidden');
 
+            // 填寫資料到 Step 2
             document.getElementById('displayName').textContent = name;
             document.getElementById('displayDetailsName').textContent = name;
             document.getElementById('displayID').textContent = id;
             document.getElementById('displayPhone').textContent = phone;
             document.getElementById('displayEmail').textContent = email;
 
+            // 切換畫面
             step1.classList.add('hidden-step');
             step2.classList.remove('hidden-step');
             step2.classList.add('fade-in');
@@ -303,10 +387,10 @@
         backBtn.addEventListener('click', () => { step2.classList.add('hidden-step'); step1.classList.remove('hidden-step'); step1.classList.add('fade-in'); });
         document.getElementById('clearBtn').addEventListener('click', () => signaturePad.clear());
 
-        // 送出
+        // 最終送出
         finalSubmitBtn.addEventListener('click', async () => {
             const address = addressInput.value.trim();
-            if (address === "") { Swal.fire({icon:'warning', title:'請填寫地址', confirmButtonColor:'#1e3a8a'}); return; }
+            if (address === "") { Swal.fire({icon:'warning', title:'請填寫地址', confirmButtonColor:'#1e3a8a'}); addressInput.focus(); return; }
             if (signaturePad.isEmpty()) { Swal.fire({icon:'warning', title:'尚未簽名', confirmButtonColor:'#1e3a8a'}); return; }
 
             const loading = document.getElementById('loadingOverlay');
@@ -322,8 +406,6 @@
             };
 
             try {
-                // 使用 no-cors 模式呼叫 GAS，或是標準模式 (因為後端有處理 JSON 回應)
-                // 這裡我們嘗試用標準 post，因為後端有包裝 CORS JSON
                 const res = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     body: JSON.stringify(formData)
@@ -332,7 +414,7 @@
                 
                 loading.style.display = 'none';
                 if (result.status === 'success') {
-                    Swal.fire({icon:'success', title:'傳送成功', html:`合約副本已寄至 ${formData.email}`, confirmButtonColor:'#1e3a8a'}).then(() => {
+                    Swal.fire({icon:'success', title:'傳送成功', html:`合約副本已寄至 ${formData.email}`, confirmButtonColor:'#1e3a8a', allowOutsideClick: false}).then(() => {
                         if (typeof liff !== 'undefined' && liff.isInClient()) liff.closeWindow();
                         else location.reload();
                     });
