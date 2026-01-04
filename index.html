@@ -14,15 +14,14 @@
     <style>
         body {
             font-family: 'Noto Sans TC', sans-serif;
-            /* 背景調整為深色系 */
             background: #0f172a; 
             min-height: 100vh;
             overflow-x: hidden;
             overscroll-behavior-y: none;
         }
-        /* 新增：頂部抬頭樣式 */
+        /* 修改：Header 樣式，支援 Logo 排版 */
         .header-banner {
-            background: rgba(30, 58, 138, 0.8);
+            background: rgba(30, 58, 138, 0.95); /* 加深背景不透明度 */
             backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             position: fixed;
@@ -30,7 +29,22 @@
             left: 0;
             right: 0;
             z-index: 50;
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
         }
+        .header-logo {
+            height: 40px; /* 設定 Logo 高度 */
+            width: auto;
+            margin-right: 12px;
+        }
+        .header-text {
+            color: white;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            font-size: 1rem;
+        }
+        
         .glass-card {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(16px);
@@ -50,7 +64,6 @@
             outline: none;
             box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
         }
-        /* 自定義 Checkbox 樣式 */
         .custom-checkbox {
             accent-color: #3b82f6;
         }
@@ -123,14 +136,14 @@
         .paren-list { list-style: none; padding-left: 1.5rem; margin-top: 0.5rem; }
         .paren-list li::before { content: counter(list-item) ") "; margin-right: 0.5rem; }
         .paren-list li { counter-increment: list-item; }
-        /* 調整主容器位置，避免被 Header 擋住 */
         .main-container { padding-top: 80px; }
     </style>
 </head>
 <body class="flex items-center justify-center p-4">
 
-    <div class="header-banner w-full p-4 text-center text-white tracking-wider font-medium shadow-md">
-        翻譯泡芙學院 | 苑程有限公司
+    <div class="header-banner">
+        <img src="logo.png" alt="Logo" class="header-logo">
+        <span class="header-text">翻譯泡芙學院 | 苑程有限公司</span>
     </div>
 
     <div id="loadingOverlay" class="loading-overlay">
@@ -141,14 +154,14 @@
     <div class="w-full max-w-3xl relative main-container">
         <div id="step1" class="glass-card rounded-2xl p-8 md:p-10 fade-in">
             <div class="text-center mb-8">
-                <h1 class="text-3xl font-bold text-white mb-2 tracking-wide">保密協議簽署</h1>
+                <h1 class="text-3xl font-bold text-white mb-2 tracking-wide">保 密 協 議 簽 署</h1>
                 <p class="text-blue-200 text-sm">Step 1 / 2 : 請填寫基本資料</p>
             </div>
             <form id="infoForm" class="space-y-6">
                 <div>
                     <label class="block text-blue-200 text-sm mb-2">
                         姓名 (Name) 
-                        <span class="text-blue-400 text-xs ml-2 font-light">(範例：王大明，僅限中英文)</span>
+                        <span class="text-blue-400 text-xs ml-2 font-light">(範例：王大明)</span>
                     </label>
                     <input type="text" id="inputName" maxlength="20" required class="glass-input w-full px-4 py-3 rounded-lg text-lg" placeholder="請輸入真實姓名">
                 </div>
@@ -259,10 +272,10 @@
     </div>
 
     <script>
-        // 設定後端 API (使用你提供的網址)
+        // 設定後端 API
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz56e4ABihWISL9Y78Drc9yhw84OsSr0GCZZZPYq3adS3_T3OLbRIKGbQ2OBLDxAr6Y/exec";
         
-        // 暫時還沒有 LIFF ID，先留空，等上傳後拿到網址再去申請
+        // 暫時還沒有 LIFF ID，先留空
         const MY_LIFF_ID = ""; 
 
         // 初始化
@@ -283,7 +296,6 @@
         const backBtn = document.getElementById('backBtn');
         const addressInput = document.getElementById('addressInput');
         const finalSubmitBtn = document.getElementById('finalSubmitBtn');
-        // 新增：獲取身分證輸入框和海外勾選框元素
         const inputID = document.getElementById('inputID');
         const isOverseasCheckbox = document.getElementById('isOverseas');
         
@@ -313,22 +325,21 @@
             return (sum + d[8]) % 10 === 0;
         }
 
-        // 新增：監聽「海外人士」勾選框變化
+        // 監聽「海外人士」勾選框變化
         isOverseasCheckbox.addEventListener('change', (e) => {
-            // 清空目前的輸入值和錯誤訊息
             inputID.value = '';
             document.getElementById('idError').classList.add('hidden');
             
             if (e.target.checked) {
                 // 勾選：切換為海外模式
                 inputID.placeholder = "請輸入護照或其他證件號碼";
-                inputID.classList.remove('uppercase'); // 移除強制大寫
-                inputID.removeAttribute('maxlength');   // 移除長度限制
+                inputID.classList.remove('uppercase'); 
+                inputID.removeAttribute('maxlength');   
             } else {
                 // 取消勾選：恢復台灣身分證模式
                 inputID.placeholder = "A123456789";
-                inputID.classList.add('uppercase');    // 加回強制大寫
-                inputID.setAttribute('maxlength', '10'); // 加回 10 碼限制
+                inputID.classList.add('uppercase');    
+                inputID.setAttribute('maxlength', '10'); 
             }
         });
 
@@ -338,22 +349,22 @@
             e.target.value = val.length > 7 ? val.slice(0,4)+'-'+val.slice(4,7)+'-'+val.slice(7) : (val.length > 4 ? val.slice(0,4)+'-'+val.slice(4) : val);
         });
 
+        // 【關鍵修改】移除這個監聽器，解決中文輸入法被擋住的問題
+        /*
         document.getElementById('inputName').addEventListener('input', function(e) {
              this.value = this.value.replace(/[^\u4e00-\u9fa5a-zA-Z\s]/g, '');
         });
+        */
 
         // 流程切換 (表單送出)
         infoForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const name = document.getElementById('inputName').value.trim();
-            // 根據是否勾選海外，決定是否將 ID 轉大寫
             const idRaw = document.getElementById('inputID').value.trim();
             const id = isOverseasCheckbox.checked ? idRaw : idRaw.toUpperCase();
             const phone = document.getElementById('inputPhone').value.trim();
             const email = document.getElementById('inputEmail').value.trim();
 
-            // 驗證身分證
-            // 修改：只有在「沒有」勾選海外人士時，才進行嚴格驗證
             if (!isOverseasCheckbox.checked) {
                 if (!validateID(id)) { 
                     document.getElementById('idError').classList.remove('hidden'); 
@@ -361,22 +372,18 @@
                 }
                 document.getElementById('idError').classList.add('hidden');
             } else {
-                // 確保海外模式下，錯誤訊息是隱藏的
                 document.getElementById('idError').classList.add('hidden');
             }
 
-            // 驗證手機
             if (!/^09\d{8}$/.test(phone.replace(/-/g,''))) { document.getElementById('phoneError').classList.remove('hidden'); return; }
             document.getElementById('phoneError').classList.add('hidden');
 
-            // 填寫資料到 Step 2
             document.getElementById('displayName').textContent = name;
             document.getElementById('displayDetailsName').textContent = name;
             document.getElementById('displayID').textContent = id;
             document.getElementById('displayPhone').textContent = phone;
             document.getElementById('displayEmail').textContent = email;
 
-            // 切換畫面
             step1.classList.add('hidden-step');
             step2.classList.remove('hidden-step');
             step2.classList.add('fade-in');
