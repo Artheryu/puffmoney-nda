@@ -146,7 +146,7 @@
         .paren-list li::before { content: counter(list-item) ") "; margin-right: 0.5rem; }
         .paren-list li { counter-increment: list-item; }
         .main-container { padding-top: 80px; }
-        /* 👇 請加入這段，強制鎖定簽名板的觸控行為 */
+        /* 強制鎖定簽名板的觸控行為 */
         #signatureCanvas {
             touch-action: none;
             cursor: crosshair;
@@ -229,9 +229,9 @@
                     <div><strong>4. 智慧財產權：</strong><ol class="contract-list"><li>甲方提供的課程教材、講義及其他相關資料，均屬甲方或相關取得授權方之智慧財產權。</li><li>未經甲方書面授權，乙方不得擅自複製、傳播或銷售任何課程相關內容。</li></ol></div>
                     <div><strong>5. 違約責任：</strong><ol class="contract-list"><li>若乙方違反本協議第三條、第四條之相關規定，致使甲方利益受損，甲方除有權要求乙方停止侵權行為外，乙方應支付懲罰性違約金，懲罰性違約金金額以課程總費用的20倍為準。</li><li>除支付前開違約金外，乙方仍需賠償甲方因違約行為導致的實際損失金額，包括但不限於商譽損害及經濟損失。</li><li>如乙方違反本協議規定，甲方有權立即取消乙方的課程資格，並不予退還已支付的任何費用。</li></ol></div>
                     <div><strong>6. 免責聲明條款：</strong><p class="pl-6 mb-2">甲方提供的課程內容僅供學術交流和教育用途，所有涉及的投資策略、案例及分析僅供參考，不構成法律、稅務、財務或任何形式之專業建議。乙方應依據自身的判斷和專業諮詢作出決策，並充分了解投資具有風險，包括但不限於資本損失、收益波動、政策變動及市場不可控因素（如市場崩盤、經濟環境惡化等）。甲方提供的課程內容、數據及資訊均基於當前市場條件和可得資訊，僅作為教學示範，不保證未來的投資收益或結果。乙方基於課程內容或甲方言論所作出的任何投資決策均為其自主行為，應自行承擔獲利虧損，甲方不因此負擔任何法律、經濟、賠償或補償等責任，乙方自不得以課程內容或甲方言論作為對其投資行為進行合理性辯護之依據。</p></div>
-                    <div><strong>7. 肖像權使用條款：</strong><ol class="contract-list"><li>乙方同意並無償授權甲方於課程期間拍攝並使用乙方之肖像、姓名及聲音，並得進行必要之修飾或公開展示。甲方可將相關素材運用於官方網站、社群媒體、課程宣傳、廣告等形式的媒體與著作載體中，作為推廣及相關用途。</li><li>前述素材之著作權及相關智慧財產權歸屬於甲方，甲方有權依本條款進行後續利用，惟應遵守以下規範：<ol class="paren-list"><li>素材之使用須符合善良風俗，不得涉及違法或損害公共秩序之行為。</li><li>不得以任何形式損害乙方之名譽、形象或人格權益。</li></ol></li><li>乙方確認本授權為無償且不可撤回，並同意甲方於合理範圍內進行素材使用，不另行主張報酬或其他權益。</li></ol></div>
-                    <div><strong>8. 退費條款：</strong><p class="pl-6 mb-2">甲方所提供之課程或服務之退費悉依翻譯泡芙學院「退費辦法」辦理，乙方已閱覽並同意依該辦法進行退費。</p></div>
-                    <div><strong>9. 其他規定：</strong><ol class="contract-list"><li>甲乙雙方因本協議所產生之爭議，應先以協商方式解決，如未能解決者，同意以中華民國法律作為適用法，並以臺灣臺北地方法院為第一審管轄法院。</li><li>本協議之修改或補充應經雙方書面同意，方可生效。</li><li>若本協議中的任何條款被視為無效或不可執行，其餘條款仍具有完全效力。</li><li>本協議壹式貳份，由甲、乙雙方各執乙份為憑。</li></ol></div>
+                    <div><strong>7. 肖像權使用條款：</strong><ol class="contract-list"><li>乙方同意並無償授權甲方於課程期間拍攝並使用乙方之肖像、姓名及聲音，並得進行必要之修飾或公開展示。甲方可將相關素材運用於官方網站、社群媒體、課程宣傳、廣告等內容中。</li></ol></div>
+                    <div><strong>8. 退費條款：</strong><p class="pl-6 mb-2">甲方所提供之課程或服務之退費悉依翻譯泡芙學院「退費辦法」辦理。</p></div>
+                    <div><strong>9. 其他規定：</strong><p class="pl-6 mb-2">甲乙雙方因本協議所產生之爭議，同意以中華民國法律作為適用法，並以臺灣臺北地方法院為第一審管轄法院。</p></div>
                 </div>
 
                 <div class="text-center font-bold my-8">【以下無協議內容】</div>
@@ -289,18 +289,12 @@
         // 設定後端 API
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz56e4ABihWISL9Y78Drc9yhw84OsSr0GCZZZPYq3adS3_T3OLbRIKGbQ2OBLDxAr6Y/exec";
         
-        // 暫時還沒有 LIFF ID，先留空
         const MY_LIFF_ID = ""; 
 
-        // 初始化
         window.onload = function() {
             if (MY_LIFF_ID && typeof liff !== 'undefined') {
                 liff.init({ liffId: MY_LIFF_ID }).catch(err => console.error(err));
             }
-            const today = new Date();
-            document.getElementById('rocYear').textContent = today.getFullYear() - 1911;
-            document.getElementById('rocMonth').textContent = today.getMonth() + 1;
-            document.getElementById('rocDay').textContent = today.getDate();
         };
 
         // DOM 元素
@@ -313,9 +307,23 @@
         const inputID = document.getElementById('inputID');
         const isOverseasCheckbox = document.getElementById('isOverseas');
         
-        // 簽名板
+        // 簽名板初始化
         const canvas = document.getElementById('signatureCanvas');
-        const signaturePad = new SignaturePad(canvas, { backgroundColor: 'rgba(255,255,255,0)', penColor: 'rgb(0,0,0)', minWidth: 1.5, maxWidth: 3.5 });
+        const signaturePad = new SignaturePad(canvas, { 
+            backgroundColor: 'rgba(255,255,255,0)', 
+            penColor: 'rgb(0,0,0)', 
+            minWidth: 1.5, 
+            maxWidth: 3.5 
+        });
+
+        // 👇 新增：JavaScript 防止觸控滑動 (保險層)
+        canvas.addEventListener("touchstart", function (e) {
+            if (e.target === canvas) e.preventDefault();
+        }, { passive: false });
+
+        canvas.addEventListener("touchmove", function (e) {
+            if (e.target === canvas) e.preventDefault();
+        }, { passive: false });
 
         function resizeCanvas() {
             const ratio = Math.max(window.devicePixelRatio || 1, 1);
@@ -329,7 +337,6 @@
         }
         window.addEventListener("resize", resizeCanvas);
 
-        // 台灣身分證驗證邏輯
         function validateID(id) {
             if (!/^[A-Z][1-2]\d{8}$/.test(id)) return false;
             const map = {A:10,B:11,C:12,D:13,E:14,F:15,G:16,H:17,J:18,K:19,L:20,M:21,N:22,P:23,Q:24,R:25,S:26,T:27,U:28,V:29,X:30,Y:31,W:32,Z:33,I:34,O:35};
@@ -339,18 +346,14 @@
             return (sum + d[8]) % 10 === 0;
         }
 
-        // 監聽「海外人士」勾選框變化
         isOverseasCheckbox.addEventListener('change', (e) => {
             inputID.value = '';
             document.getElementById('idError').classList.add('hidden');
-            
             if (e.target.checked) {
-                // 勾選：切換為海外模式
                 inputID.placeholder = "請輸入護照或其他證件號碼";
                 inputID.classList.remove('uppercase'); 
                 inputID.removeAttribute('maxlength');   
             } else {
-                // 取消勾選：恢復台灣身分證模式
                 inputID.placeholder = "A123456789";
                 inputID.classList.add('uppercase');    
                 inputID.setAttribute('maxlength', '10'); 
@@ -363,7 +366,6 @@
             e.target.value = val.length > 7 ? val.slice(0,4)+'-'+val.slice(4,7)+'-'+val.slice(7) : (val.length > 4 ? val.slice(0,4)+'-'+val.slice(4) : val);
         });
 
-        // 流程切換 (表單送出)
         infoForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const name = document.getElementById('inputName').value.trim();
@@ -378,12 +380,9 @@
                     return; 
                 }
                 document.getElementById('idError').classList.add('hidden');
-            } else {
-                document.getElementById('idError').classList.add('hidden');
             }
 
             if (!/^09\d{8}$/.test(phone.replace(/-/g,''))) { document.getElementById('phoneError').classList.remove('hidden'); return; }
-            document.getElementById('phoneError').classList.add('hidden');
 
             document.getElementById('displayName').textContent = name;
             document.getElementById('displayDetailsName').textContent = name;
@@ -401,11 +400,10 @@
         backBtn.addEventListener('click', () => { step2.classList.add('hidden-step'); step1.classList.remove('hidden-step'); step1.classList.add('fade-in'); });
         document.getElementById('clearBtn').addEventListener('click', () => signaturePad.clear());
 
-        // 最終送出
         finalSubmitBtn.addEventListener('click', async () => {
             const address = addressInput.value.trim();
-            if (address === "") { Swal.fire({icon:'warning', title:'請填寫地址', confirmButtonColor:'#1e3a8a'}); addressInput.focus(); return; }
-            if (signaturePad.isEmpty()) { Swal.fire({icon:'warning', title:'尚未簽名', confirmButtonColor:'#1e3a8a'}); return; }
+            if (address === "") { Swal.fire({icon:'warning', title:'請填寫地址'}); addressInput.focus(); return; }
+            if (signaturePad.isEmpty()) { Swal.fire({icon:'warning', title:'尚未簽名'}); return; }
 
             const loading = document.getElementById('loadingOverlay');
             loading.style.display = 'flex';
@@ -425,17 +423,15 @@
                     body: JSON.stringify(formData)
                 });
                 const result = await res.json();
-                
                 loading.style.display = 'none';
                 if (result.status === 'success') {
-                    Swal.fire({icon:'success', title:'傳送成功', html:`合約副本已寄至 ${formData.email}`, confirmButtonColor:'#1e3a8a', allowOutsideClick: false}).then(() => {
-                        if (typeof liff !== 'undefined' && liff.isInClient()) liff.closeWindow();
-                        else location.reload();
+                    Swal.fire({icon:'success', title:'傳送成功', html:`合約副本已寄至 ${formData.email}`, allowOutsideClick: false}).then(() => {
+                        location.reload();
                     });
                 } else { throw new Error(result.message); }
             } catch (error) {
                 loading.style.display = 'none';
-                Swal.fire({icon:'error', title:'發生錯誤', text: error.toString(), confirmButtonColor:'#ef4444'});
+                Swal.fire({icon:'error', title:'發生錯誤', text: error.toString()});
             }
         });
     </script>
