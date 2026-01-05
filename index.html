@@ -146,6 +146,11 @@
         .paren-list li::before { content: counter(list-item) ") "; margin-right: 0.5rem; }
         .paren-list li { counter-increment: list-item; }
         .main-container { padding-top: 80px; }
+        /* 👇 請加入這段，強制鎖定簽名板的觸控行為 */
+        #signatureCanvas {
+            touch-action: none;
+            cursor: crosshair;
+        }
     </style>
 </head>
 <body class="flex items-center justify-center p-4">
