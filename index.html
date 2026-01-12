@@ -11,120 +11,116 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        body { font-family: 'Noto Sans TC', sans-serif; background: #0f172a; min-height: 100vh; overflow-x: hidden; }
+        body { font-family: 'Noto Sans TC', sans-serif; background: #0f172a; min-height: 100vh; margin: 0; }
         .header-banner { background: rgba(30, 58, 138, 0.95); backdrop-filter: blur(10px); position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-        .header-logo { height: 40px; }
+        .header-logo { height: 32px; }
         .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); }
-        .glass-input { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: white; width: 100%; padding: 0.75rem 1rem; border-radius: 0.5rem; }
+        .glass-input { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: white; width: 100%; padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 1rem; }
         .glass-input:focus { border-color: #3b82f6; outline: none; box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); }
-        .paper-ui { background-color: #ffffff; color: #111827; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); display: none; }
-        .loading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.85); z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .loader { width: 48px; height: 48px; border: 5px solid #FFF; border-bottom-color: #3b82f6; border-radius: 50%; animation: rotation 1s linear infinite; }
+        .paper-ui { background-color: #ffffff; color: #111827; display: none; }
+        .loading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.8); z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .loader { width: 40px; height: 40px; border: 4px solid #FFF; border-bottom-color: #3b82f6; border-radius: 50%; animation: rotation 1s linear infinite; }
         @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        #signatureCanvas { touch-action: none; cursor: crosshair; border: 2px dashed #ccc; background: #fafafa; }
-        .fade-in { animation: fadeIn 0.5s ease-in-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .contract-content { white-space: pre-wrap; line-height: 1.8; text-align: justify; }
+        #signatureCanvas { touch-action: none; cursor: crosshair; border: 1px solid #ccc; background: #fff; width: 100%; height: 250px; }
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="flex items-center justify-center p-4 pt-24">
+<body class="flex items-center justify-center p-4 pt-20">
 
     <div class="header-banner">
         <img src="logo.png" alt="Logo" class="header-logo">
-        <span class="text-white font-medium text-sm md:text-base">翻譯泡芙學院 | 苑程有限公司</span>
+        <span class="text-white font-medium text-xs md:text-sm">翻譯泡芙學院 | 苑程有限公司</span>
     </div>
 
     <!-- 載入中遮罩 -->
-    <div id="loadingOverlay" class="loading-overlay">
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
         <span class="loader mb-4"></span>
-        <p id="loadingText" class="text-white text-lg tracking-widest">初始化系統中...</p>
+        <p id="loadingText" class="text-white text-sm tracking-widest">系統處理中...</p>
     </div>
 
-    <div class="w-full max-w-3xl">
+    <div class="w-full max-w-xl">
         <!-- Step 1: 填寫資料 -->
-        <div id="step1" class="glass-card rounded-2xl p-6 md:p-10 fade-in">
-            <div class="text-center mb-8">
-                <h1 class="text-2xl font-bold text-white mb-2">保 密 協 議 簽 署</h1>
-                <p class="text-blue-200 text-sm">請輸入您的基本資料</p>
+        <div id="step1" class="glass-card rounded-2xl p-6 md:p-8 fade-in">
+            <div class="text-center mb-6">
+                <h1 class="text-xl font-bold text-white mb-1">保 密 協 議 簽 署</h1>
+                <p class="text-blue-200 text-xs">Step 1/2: 填寫基本資料</p>
             </div>
-            <form id="infoForm" class="space-y-5">
+            <form id="infoForm" class="space-y-4">
                 <div>
-                    <label class="block text-blue-200 text-sm mb-1">上課日期 (例如: 0117)</label>
-                    <input type="text" id="inputDate" maxlength="4" required class="glass-input" placeholder="請輸入四位日期數字">
+                    <label class="block text-blue-200 text-xs mb-1">上課日期 (例如: 0117)</label>
+                    <input type="text" id="inputDate" maxlength="4" required class="glass-input" placeholder="0000">
                 </div>
                 <div>
-                    <label class="block text-blue-200 text-sm mb-1">姓名 (Name)</label>
-                    <input type="text" id="inputName" required class="glass-input" placeholder="請輸入真實姓名">
+                    <label class="block text-blue-200 text-xs mb-1">姓名 (Name)</label>
+                    <input type="text" id="inputName" required class="glass-input" placeholder="真實姓名">
                 </div>
                 <div>
-                    <label class="block text-blue-200 text-sm mb-1">身分證字號 (ID Number)</label>
+                    <label class="block text-blue-200 text-xs mb-1">身分證字號 (ID Number)</label>
                     <input type="text" id="inputID" required class="glass-input uppercase" placeholder="A123456789">
                 </div>
                 <div>
-                    <label class="block text-blue-200 text-sm mb-1">電子信箱 (Email)</label>
-                    <p class="text-blue-400 text-xs mb-2">💡 簽署完成後副本將寄送至此，請務必填寫正確。</p>
+                    <label class="block text-blue-200 text-xs mb-1">聯絡電話 (Phone)</label>
+                    <input type="tel" id="inputPhone" required class="glass-input" placeholder="0900-000-000">
+                </div>
+                <div>
+                    <label class="block text-blue-200 text-xs mb-1">電子信箱 (Email)</label>
+                    <p class="text-blue-400 text-[10px] mb-1">💡 簽署完後副本將寄至此，請確保填寫正確。</p>
                     <input type="email" id="inputEmail" required class="glass-input" placeholder="example@email.com">
                 </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-lg transition-all mt-4">
-                    下一步：閱讀協議內容
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition-all mt-2">
+                    下一步：預覽合約內容
                 </button>
             </form>
         </div>
 
         <!-- Step 2: 協議內容 -->
-        <div id="step2" class="paper-ui rounded-lg p-6 md:p-12">
-            <div class="text-center mb-8">
-                <h2 class="text-2xl font-bold text-gray-900 border-b-2 border-black inline-block pb-1">保 密 協 議 書</h2>
+        <div id="step2" class="paper-ui rounded-xl p-6 md:p-10 fade-in">
+            <div class="text-center mb-6">
+                <h2 class="text-xl font-bold text-gray-900 border-b-2 border-black inline-block pb-1">保 密 協 議 書</h2>
             </div>
             
-            <div id="contractDisplay" class="contract-content text-gray-800 text-sm md:text-base mb-8">
-                <!-- 這裡會由後端自動填充文字 -->
-                載入協議內容中...
+            <div id="contractDisplay" class="text-gray-800 text-sm leading-relaxed mb-8 whitespace-pre-wrap text-justify">
+                載入中...
             </div>
 
-            <div class="border-t pt-8 space-y-4">
-                <p><strong>立書人姓名：</strong> <span id="displayName" class="underline"></span></p>
+            <div class="border-t pt-6 space-y-4">
+                <p class="text-sm"><strong>立書人姓名：</strong> <span id="displayName" class="underline font-bold"></span></p>
                 <div>
                     <label class="block text-sm font-bold text-gray-900 mb-2">請在此簽名： <span class="text-red-500">*</span></label>
-                    <canvas id="signatureCanvas" class="w-full h-64 rounded-lg"></canvas>
-                    <button type="button" id="clearBtn" class="mt-2 text-sm text-gray-500 underline">清除重新簽名</button>
+                    <canvas id="signatureCanvas"></canvas>
+                    <button type="button" id="clearBtn" class="mt-2 text-xs text-gray-500 underline">清除並重新簽名</button>
                 </div>
-                <button id="finalSubmitBtn" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-4 rounded-lg shadow-xl text-lg mt-6">
-                    我已閱讀並同意上述條款，確認送出
+                <button id="finalSubmitBtn" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-4 rounded-lg shadow-lg text-lg mt-4">
+                    同意並完成簽署
                 </button>
             </div>
         </div>
     </div>
 
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxBEMq10DZ9M2JQVM1VkTSv463c4X_HfyL8tNT52_3UjIEagemn6DuF2wU0ZIEmVwUK8g/exec"; // 👈 請填入你最新部署的網址
+        const GOOGLE_SCRIPT_URL = "您的後端網址"; // 👈 請填入您的 Web App URL
         
-        let whitelist = {}; // 通關日期名單
-        let fullContractText = ""; // 合約文字內容
+        let whitelist = {}; 
+        let fullContractText = ""; 
         let isDataLoaded = false;
 
-        // 一啟動就去抓後端資料
-        window.onload = async function() {
+        // 加速預載：網頁一開就抓
+        (async function preload() {
             try {
-                const response = await fetch(GOOGLE_SCRIPT_URL);
-                const result = await response.json();
+                const res = await fetch(GOOGLE_SCRIPT_URL);
+                const result = await res.json();
                 if (result.status === 'success') {
                     whitelist = result.whitelist;
                     fullContractText = result.contractText;
                     isDataLoaded = true;
-                    document.getElementById('loadingOverlay').style.display = 'none';
-                } else {
-                    throw new Error("初始化失敗");
                 }
-            } catch (e) {
-                Swal.fire({ icon: 'error', title: '系統連線失敗', text: '請檢查網路連線或聯繫客服' });
-            }
-        };
+            } catch (e) { console.error("資料預載失敗", e); }
+        })();
 
         const canvas = document.getElementById('signatureCanvas');
-        const signaturePad = new SignaturePad(canvas);
+        const signaturePad = new SignaturePad(canvas, { backgroundColor: 'rgb(255, 255, 255)' });
 
-        // 自動調整畫布大小
         function resizeCanvas() {
             const ratio = Math.max(window.devicePixelRatio || 1, 1);
             canvas.width = canvas.offsetWidth * ratio;
@@ -132,65 +128,60 @@
             canvas.getContext("2d").scale(ratio, ratio);
             signaturePad.clear();
         }
-        window.onresize = resizeCanvas;
 
-        // 表單提交檢查日期
         document.getElementById('infoForm').onsubmit = function(e) {
             e.preventDefault();
             const dateInput = document.getElementById('inputDate').value.trim();
-            
-            // 智慧檢查日期是否在白名單內
+
+            if (!isDataLoaded) {
+                Swal.fire({ icon: 'info', title: '請稍候', text: '系統正在準備合約資料，請再試一次。', timer: 2000 });
+                return;
+            }
+
             if (!whitelist[dateInput]) {
                 Swal.fire({ icon: 'error', title: '日期不正確', text: '日期不正確，請跟客服確認時間', confirmButtonColor: '#1e3a8a' });
                 return;
             }
 
-            // 顯示第二頁
             document.getElementById('displayName').innerText = document.getElementById('inputName').value;
             document.getElementById('contractDisplay').innerText = fullContractText;
             document.getElementById('step1').style.display = 'none';
             document.getElementById('step2').style.display = 'block';
-            resizeCanvas();
+            setTimeout(resizeCanvas, 50);
             window.scrollTo(0,0);
         };
 
         document.getElementById('clearBtn').onclick = () => signaturePad.clear();
 
-        // 最終送出
         document.getElementById('finalSubmitBtn').onclick = async function() {
             if (signaturePad.isEmpty()) {
-                Swal.fire({ icon: 'warning', title: '請先完成簽名' });
+                Swal.fire({ icon: 'warning', title: '請填寫簽名' });
                 return;
             }
 
             document.getElementById('loadingOverlay').style.display = 'flex';
-            document.getElementById('loadingText').innerText = "正在安全傳輸中...";
 
             const payload = {
                 courseDate: document.getElementById('inputDate').value,
                 name: document.getElementById('inputName').value,
                 id: document.getElementById('inputID').value,
+                phone: document.getElementById('inputPhone').value,
                 email: document.getElementById('inputEmail').value,
                 signature_base64: signaturePad.toDataURL()
             };
 
             try {
-                const res = await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify(payload)
-                });
+                const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
                 const result = await res.json();
                 document.getElementById('loadingOverlay').style.display = 'none';
                 
                 if (result.status === 'success') {
-                    Swal.fire({ icon: 'success', title: '簽署完成', text: '副本已寄送至您的信箱', allowOutsideClick: false })
+                    Swal.fire({ icon: 'success', title: '完成', text: '簽署成功！副本已寄送。', allowOutsideClick: false })
                     .then(() => location.reload());
-                } else {
-                    throw new Error(result.message);
-                }
+                } else { throw new Error(result.message); }
             } catch (e) {
                 document.getElementById('loadingOverlay').style.display = 'none';
-                Swal.fire({ icon: 'error', title: '送出失敗', text: e.toString() });
+                Swal.fire({ icon: 'error', title: '失敗', text: e.toString() });
             }
         };
     </script>
