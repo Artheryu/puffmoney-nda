@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Noto Sans TC', sans-serif; background: #020617; min-height: 100vh; margin: 0; padding-bottom: 50px; }
+        body { font-family: 'Noto Sans TC', sans-serif; background: #020617; min-height: 100vh; margin: 0; padding-bottom: 50px; overscroll-behavior-y: none; }
         .header-banner { background: rgba(30, 58, 138, 0.95); backdrop-filter: blur(10px); position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
         .header-logo { height: 32px; }
         .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); }
@@ -22,7 +22,17 @@
         .loading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.9); z-index: 100; display: none; flex-direction: column; justify-content: center; align-items: center; }
         .loader { width: 50px; height: 50px; border: 5px solid #FFF; border-bottom-color: #3b82f6; border-radius: 50%; animation: rotation 1s linear infinite; }
         @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        #signatureCanvas { touch-action: none; cursor: crosshair; border: 2px solid #cbd5e1; background: #fff; width: 100%; height: 220px; border-radius: 4px; }
+        
+        /* 💡 修正：增加 !important 確保鎖定觸控 */
+        #signatureCanvas { 
+            touch-action: none !important; 
+            cursor: crosshair; 
+            border: 2px solid #cbd5e1; 
+            background: #fff; 
+            width: 100%; 
+            height: 220px; 
+            border-radius: 4px; 
+        }
         .inline-address-input { border: 2px solid #1e3a8a; background: #f0f9ff; padding: 12px 15px; width: 100%; font-weight: 900; font-size: 16px; outline: none; border-radius: 8px; color: #1e3a8a; }
     </style>
 </head>
@@ -78,32 +88,30 @@
 
         const isOverseas = document.getElementById('isOverseas');
         const inputID = document.getElementById('inputID');
-        
-        // 💡 修正：海外人士切換邏輯
         isOverseas.onchange = function() {
             inputID.value = ""; 
             if (this.checked) {
-                inputID.placeholder = "請輸入護照或證件號碼";
-                inputID.removeAttribute('maxlength'); // 海外模式：解除 10 碼限制
-                inputID.classList.remove('uppercase');
+                inputID.placeholder = "請輸入護照或證件號碼"; inputID.removeAttribute('maxlength'); inputID.classList.remove('uppercase');
             } else {
-                inputID.placeholder = "A123456789";
-                inputID.setAttribute('maxlength', '10'); // 台灣模式：鎖定 10 碼
-                inputID.classList.add('uppercase');
+                inputID.placeholder = "A123456789"; inputID.setAttribute('maxlength', '10'); inputID.classList.add('uppercase');
             }
         };
 
         const canvas = document.getElementById('signatureCanvas');
         const signaturePad = new SignaturePad(canvas, { backgroundColor: 'rgb(255, 255, 255)', penColor: 'rgb(0, 0, 0)' });
+
+        // 💡 核心修正：強制防止觸控滑動
+        canvas.addEventListener("touchstart", function(e) { if (e.target === canvas) e.preventDefault(); }, { passive: false });
+        canvas.addEventListener("touchmove", function(e) { if (e.target === canvas) e.preventDefault(); }, { passive: false });
+
         function resizeCanvas() {
             const ratio = Math.max(window.devicePixelRatio || 1, 1);
             canvas.width = canvas.offsetWidth * ratio; canvas.height = canvas.offsetHeight * ratio;
             canvas.getContext("2d").scale(ratio, ratio); signaturePad.clear();
         }
 
-        // 💡 修正：身分證檢查邏輯
         function validateID(id) {
-            if (isOverseas.checked) return id.length >= 3; // 海外人士只要有填（大於3碼）就過
+            if (isOverseas.checked) return id.length >= 3;
             if (!/^[A-Z][1-2]\d{8}$/.test(id)) return false;
             const map = {A:10,B:11,C:12,D:13,E:14,F:15,G:16,H:17,J:18,K:19,L:20,M:21,N:22,P:23,Q:24,R:25,S:26,T:27,U:28,V:29,X:30,Y:31,W:32,Z:33,I:34,O:35};
             const n = map[id[0]], x1 = Math.floor(n/10), x2 = n%10, d = id.slice(1).split('').map(Number);
@@ -128,11 +136,9 @@
                 document.getElementById('loadingOverlay').style.display = 'none'; isWaiting = false;
                 Swal.fire({ icon: 'error', title: '日期不正確', text: '請跟客服確認上課日期' }); return;
             }
-            
             const bold = (val, id) => `<span id="${id}" class="highlight-bold">${val}</span>`;
             let pText = fullContractText;
             const now = new Date(); const rocY = now.getFullYear() - 1911;
-
             pText = pText.replace(/{{Name}}/g, bold(document.getElementById('inputName').value, 'namePrev'))
                          .replace(/{{ID}}/g, bold(inputID.value.toUpperCase(), 'idPrev'))
                          .replace(/{{Phone}}/g, bold(document.getElementById('inputPhone').value, 'phonePrev'))
@@ -142,14 +148,12 @@
                          .replace(/{{Month}}/g, bold(now.getMonth() + 1, 'mPrev'))
                          .replace(/{{Day}}/g, bold(now.getDate(), 'dPrev'))
                          .replace(/{{Signature}}/g, "\n\n");
-
             document.getElementById('displayName').innerText = document.getElementById('inputName').value;
             document.getElementById('contractDisplay').innerHTML = pText;
             document.getElementById('step1').style.display = 'none';
             document.getElementById('step2').style.display = 'block';
             document.getElementById('loadingOverlay').style.display = 'none';
             isWaiting = false; setTimeout(resizeCanvas, 100); window.scrollTo(0,0);
-
             const addrInput = document.getElementById('inputAddress');
             const addrDisplay = document.getElementById('addrLivePrev');
             addrInput.oninput = function() { addrDisplay.innerText = this.value || "尚未填寫"; };
@@ -160,7 +164,6 @@
             const address = document.getElementById('inputAddress').value.trim();
             if (address === "") { Swal.fire({ icon: 'warning', title: '請填寫地址' }); return; }
             if (signaturePad.isEmpty()) { Swal.fire({ icon: 'warning', title: '尚未簽名' }); return; }
-            
             document.getElementById('loadingOverlay').style.display = 'flex';
             const payload = {
                 courseDate: document.getElementById('inputDate').value,
@@ -174,7 +177,7 @@
                 const result = await res.json();
                 document.getElementById('loadingOverlay').style.display = 'none';
                 if (result.status === 'success') {
-                    Swal.fire({ icon: 'success', title: '簽署完成', text: '合約副本已寄送至您的信箱，感謝您的配合！' }).then(() => location.reload());
+                    Swal.fire({ icon: 'success', title: '簽署完成', text: '合約副本已寄送至信箱，感謝您的配合！' }).then(() => location.reload());
                 } else throw new Error(result.message);
             } catch (e) {
                 document.getElementById('loadingOverlay').style.display = 'none';
