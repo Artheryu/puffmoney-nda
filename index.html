@@ -7,32 +7,26 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* 背景加深，突顯紙張 */
         body { font-family: 'Noto Sans TC', sans-serif; background: #020617; min-height: 100vh; margin: 0; padding-bottom: 50px; }
         .header-banner { background: rgba(30, 58, 138, 0.95); backdrop-filter: blur(10px); position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
         .header-logo { height: 32px; }
-        
         .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); }
         .glass-input { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: white; width: 100%; padding: 0.8rem 1rem; border-radius: 0.5rem; }
-        
-        /* ✨ 強化紙張質感：超重陰影與白紙背景 */
         .paper-ui { background: #ffffff; color: #111827; display: none; border-radius: 4px; padding: 60px 40px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9); position: relative; margin-top: 20px; border: 1px solid #e2e8f0; }
         .paper-ui::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 10px; background: #1e3a8a; border-radius: 4px 4px 0 0; }
-        
         .contract-content { white-space: pre-wrap; line-height: 2.2; text-align: justify; font-size: 15px; color: #1f2937; margin-bottom: 30px; }
         
-        /* 關鍵字加粗且顯眼 */
-        .highlight-bold { font-weight: 900; color: #000; border-bottom: 2px solid #1e3a8a; padding: 0 2px; background: #f0f7ff; }
+        /* 💡 終極加粗樣式：黃色底+黑色黑體字 */
+        .highlight-bold { font-weight: 900 !important; color: #000 !important; background: #ffff00; padding: 2px 4px; border-radius: 2px; text-decoration: underline; font-size: 1.05em; }
         
         .loading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.9); z-index: 100; display: none; flex-direction: column; justify-content: center; align-items: center; }
         .loader { width: 50px; height: 50px; border: 5px solid #FFF; border-bottom-color: #3b82f6; border-radius: 50%; animation: rotation 1s linear infinite; }
         @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
         #signatureCanvas { touch-action: none; cursor: crosshair; border: 2px solid #cbd5e1; background: #fff; width: 100%; height: 220px; border-radius: 4px; }
-        .inline-address-input { border: 2px solid #1e3a8a; background: #f8fafc; padding: 12px 15px; width: 100%; font-weight: bold; font-size: 16px; outline: none; border-radius: 8px; }
+        .inline-address-input { border: 2px solid #1e3a8a; background: #f0f9ff; padding: 12px 15px; width: 100%; font-weight: 900; font-size: 16px; outline: none; border-radius: 8px; color: #1e3a8a; }
     </style>
 </head>
 <body class="flex items-center justify-center p-4 pt-24">
@@ -41,41 +35,32 @@
     <div id="loadingOverlay" class="loading-overlay"><span class="loader mb-4"></span><p id="loadingText" class="text-white text-sm tracking-widest">正在安全處理中...</p></div>
 
     <div class="w-full max-w-2xl">
-        <!-- Step 1 -->
         <div id="step1" class="glass-card rounded-3xl p-8 md:p-12 fade-in">
             <div class="text-center mb-10"><h1 class="text-3xl font-black text-white mb-2 tracking-tighter">保密協議簽署</h1><div class="h-1 w-20 bg-blue-500 mx-auto"></div></div>
             <form id="infoForm" class="space-y-6">
-                <div><label class="block text-blue-200 text-xs font-bold mb-1">上課日期 (例: 0117)</label><input type="text" id="inputDate" maxlength="4" required class="glass-input" placeholder="請輸入四位日期"></div>
-                <div><label class="block text-blue-200 text-xs font-bold mb-1">真實姓名 (Full Name)</label><input type="text" id="inputName" required class="glass-input" placeholder="請輸入姓名"></div>
+                <div><label class="block text-blue-200 text-xs font-bold mb-1">上課日期 (例如: 0117)</label><input type="text" id="inputDate" maxlength="4" required class="glass-input" oninput="this.value=this.value.replace(/[^0-9]/g,'')" placeholder="0000"></div>
+                <div><label class="block text-blue-200 text-xs font-bold mb-1">真實姓名 (Full Name)</label><input type="text" id="inputName" required class="glass-input" placeholder="姓名"></div>
                 <div>
-                    <div class="flex justify-between items-center mb-1"><label class="text-blue-200 text-xs font-bold">身分證字號</label><label class="text-blue-400 text-[11px] flex items-center cursor-pointer"><input type="checkbox" id="isOverseas" class="mr-1">海外人士(護照)</label></div>
-                    <input type="text" id="inputID" required class="glass-input uppercase" placeholder="A123456789">
+                    <div class="flex justify-between items-center mb-1"><label class="text-blue-200 text-xs font-bold">身分證字號</label><label class="text-blue-400 text-[11px] flex items-center cursor-pointer"><input type="checkbox" id="isOverseas" class="mr-1">海外人士</label></div>
+                    <input type="text" id="inputID" maxlength="10" required class="glass-input uppercase" placeholder="A123456789">
                 </div>
-                <div><label class="block text-blue-200 text-xs font-bold mb-1">聯絡電話</label><input type="tel" id="inputPhone" required class="glass-input" placeholder="09xxxxxxxx"></div>
-                <div><label class="block text-blue-200 text-xs font-bold mb-1">電子信箱</label><input type="email" id="inputEmail" required class="glass-input" placeholder="example@email.com"></div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-xl shadow-xl transform transition active:scale-95 text-lg mt-4">下一步：進入簽署頁面</button>
+                <div><label class="block text-blue-200 text-xs font-bold mb-1">聯絡電話 (最多 10 碼)</label><input type="tel" id="inputPhone" maxlength="10" required class="glass-input" oninput="this.value=this.value.replace(/[^0-9]/g,'')" placeholder="09xxxxxxxx"></div>
+                <div><label class="block text-blue-200 text-xs font-bold mb-1">電子信箱 (Email)</label><input type="email" id="inputEmail" required class="glass-input" placeholder="example@email.com"></div>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-xl shadow-xl transform transition active:scale-95 text-lg mt-4">下一步：預覽合約</button>
             </form>
         </div>
 
-        <!-- Step 2 -->
         <div id="step2" class="paper-ui fade-in">
             <div class="text-center mb-12"><h2 class="text-3xl font-black text-gray-900 border-b-4 border-gray-900 inline-block pb-1 tracking-widest">保 密 協 議 書</h2></div>
-            
             <div id="contractDisplay" class="contract-content"></div>
-
-            <div class="bg-blue-50 p-6 rounded-lg border-l-8 border-blue-600 mb-10">
+            <div class="bg-blue-50 p-6 rounded-lg border-l-8 border-blue-600 mb-10 shadow-inner">
                 <label class="block text-blue-900 font-black text-sm mb-2">請在此輸入您的通訊地址 (必填)：</label>
-                <input type="text" id="inputAddress" class="inline-address-input" placeholder="請輸入您的完整聯絡地址">
+                <input type="text" id="inputAddress" class="inline-address-input" placeholder="輸入您的完整聯絡地址">
             </div>
-
             <div class="border-t-2 border-gray-900 pt-8 space-y-6">
-                <div class="flex justify-between items-end"><p class="font-bold text-lg">立書人(乙方)：<span id="displayName" class="highlight-bold"></span></p></div>
-                <div>
-                    <label class="block text-sm font-black text-gray-900 mb-2 underline">請在此簽名 (Signature)： *</label>
-                    <canvas id="signatureCanvas"></canvas>
-                    <button type="button" id="clearBtn" class="mt-2 text-xs text-gray-400 font-bold uppercase tracking-widest hover:text-red-500 transition">Clear / 清除重簽</button>
-                </div>
-                <button id="finalSubmitBtn" class="w-full bg-black hover:bg-gray-800 text-white font-black py-5 rounded-sm shadow-2xl text-xl mt-6 tracking-widest transition-all active:scale-95">同意協議並完成數位簽署</button>
+                <p class="font-bold text-lg">立書人(乙方)：<span id="displayName" class="highlight-bold"></span></p>
+                <div><label class="block text-sm font-black text-gray-900 mb-2 underline">請在此簽名 (Signature)： *</label><canvas id="signatureCanvas"></canvas><button type="button" id="clearBtn" class="mt-2 text-xs text-gray-400 font-bold hover:text-red-500 transition">CLEAR / 清除重簽</button></div>
+                <button id="finalSubmitBtn" class="w-full bg-black hover:bg-gray-800 text-white font-black py-5 rounded-sm shadow-2xl text-xl mt-6 tracking-widest transition-all">完成數位簽署並寄送副本</button>
             </div>
         </div>
     </div>
@@ -97,20 +82,30 @@
         const isOverseas = document.getElementById('isOverseas');
         const inputID = document.getElementById('inputID');
         isOverseas.onchange = function() {
-            inputID.value = ""; inputID.placeholder = this.checked ? "請輸入護照或證件號碼" : "A123456789";
-            if (this.checked) inputID.classList.remove('uppercase'); else inputID.classList.add('uppercase');
+            inputID.value = ""; inputID.placeholder = this.checked ? "護照或證件號碼" : "A123456789";
+            if (this.checked) inputID.removeAttribute('maxlength'); else inputID.setAttribute('maxlength', '10');
         };
 
         const canvas = document.getElementById('signatureCanvas');
-        const signaturePad = new SignaturePad(canvas, { backgroundColor: 'rgb(255, 255, 255)' });
+        const signaturePad = new SignaturePad(canvas, { backgroundColor: 'rgb(255, 255, 255)', penColor: 'rgb(0, 0, 0)' });
         function resizeCanvas() {
             const ratio = Math.max(window.devicePixelRatio || 1, 1);
             canvas.width = canvas.offsetWidth * ratio; canvas.height = canvas.offsetHeight * ratio;
             canvas.getContext("2d").scale(ratio, ratio); signaturePad.clear();
         }
 
+        function validateID(id) {
+            if (isOverseas.checked) return id.length >= 5;
+            if (!/^[A-Z][1-2]\d{8}$/.test(id)) return false;
+            const map = {A:10,B:11,C:12,D:13,E:14,F:15,G:16,H:17,J:18,K:19,L:20,M:21,N:22,P:23,Q:24,R:25,S:26,T:27,U:28,V:29,X:30,Y:31,W:32,Z:33,I:34,O:35};
+            const n = map[id[0]], x1 = Math.floor(n/10), x2 = n%10, d = id.slice(1).split('').map(Number);
+            let sum = x1 + x2*9; for(let i=0;i<8;i++) sum += d[i]*[8,7,6,5,4,3,2,1][i];
+            return (sum + d[8]) % 10 === 0;
+        }
+
         document.getElementById('infoForm').onsubmit = function(e) {
             e.preventDefault();
+            if (!validateID(inputID.value.trim().toUpperCase())) { Swal.fire({ icon: 'error', title: '格式錯誤', text: '請輸入正確的身分證或證件號碼' }); return; }
             document.getElementById('loadingOverlay').style.display = 'flex';
             if (isDataLoaded) proceedToStep2(); else isWaiting = true;
         };
@@ -126,12 +121,11 @@
             let pText = fullContractText;
             const now = new Date(); const rocY = now.getFullYear() - 1911;
 
-            // 💡 預先填入標籤，並為地址標籤加上 ID 以便即時同步
             pText = pText.replace(/{{Name}}/g, bold(document.getElementById('inputName').value, 'namePrev'))
                          .replace(/{{ID}}/g, bold(document.getElementById('inputID').value, 'idPrev'))
                          .replace(/{{Phone}}/g, bold(document.getElementById('inputPhone').value, 'phonePrev'))
                          .replace(/{{Email}}/g, bold(document.getElementById('inputEmail').value, 'emailPrev'))
-                         .replace(/{{Address}}/g, bold("尚未填寫", 'addrLivePrev')) // 👈 這格會動！
+                         .replace(/{{Address}}/g, bold("尚未填寫", 'addrLivePrev'))
                          .replace(/{{Year}}/g, bold(rocY, 'yPrev'))
                          .replace(/{{Month}}/g, bold(now.getMonth() + 1, 'mPrev'))
                          .replace(/{{Day}}/g, bold(now.getDate(), 'dPrev'))
@@ -142,15 +136,11 @@
             document.getElementById('step1').style.display = 'none';
             document.getElementById('step2').style.display = 'block';
             document.getElementById('loadingOverlay').style.display = 'none';
-            isWaiting = false; 
-            setTimeout(resizeCanvas, 100); window.scrollTo(0,0);
+            isWaiting = false; setTimeout(resizeCanvas, 100); window.scrollTo(0,0);
 
-            // ⚡️ 即時同步地址功能
             const addrInput = document.getElementById('inputAddress');
             const addrDisplay = document.getElementById('addrLivePrev');
-            addrInput.oninput = function() {
-                addrDisplay.innerText = this.value || "尚未填寫";
-            };
+            addrInput.oninput = function() { addrDisplay.innerText = this.value || "尚未填寫"; };
         }
 
         document.getElementById('clearBtn').onclick = () => signaturePad.clear();
@@ -163,10 +153,8 @@
             const payload = {
                 courseDate: document.getElementById('inputDate').value,
                 name: document.getElementById('inputName').value,
-                id: document.getElementById('inputID').value,
-                phone: document.getElementById('inputPhone').value,
-                email: document.getElementById('inputEmail').value,
-                address: address,
+                id: inputID.value, phone: document.getElementById('inputPhone').value,
+                email: document.getElementById('inputEmail').value, address: address,
                 signature_base64: signaturePad.toDataURL()
             };
             try {
@@ -174,7 +162,7 @@
                 const result = await res.json();
                 document.getElementById('loadingOverlay').style.display = 'none';
                 if (result.status === 'success') {
-                    Swal.fire({ icon: 'success', title: '簽署完成', text: '副本已寄送至信箱' }).then(() => location.reload());
+                    Swal.fire({ icon: 'success', title: '簽署完成', text: '合約副本已寄至您的信箱，感謝您的配合！' }).then(() => location.reload());
                 } else throw new Error(result.message);
             } catch (e) {
                 document.getElementById('loadingOverlay').style.display = 'none';
