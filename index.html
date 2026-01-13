@@ -18,10 +18,7 @@
         .paper-ui { background: #ffffff; color: #111827; display: none; border-radius: 4px; padding: 60px 40px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9); position: relative; margin-top: 20px; border: 1px solid #e2e8f0; }
         .paper-ui::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 10px; background: #1e3a8a; border-radius: 4px 4px 0 0; }
         .contract-content { white-space: pre-wrap; line-height: 2.2; text-align: justify; font-size: 15px; color: #1f2937; margin-bottom: 30px; }
-        
-        /* 💡 終極加粗樣式：黃色底+黑色黑體字 */
         .highlight-bold { font-weight: 900 !important; color: #000 !important; background: #ffff00; padding: 2px 4px; border-radius: 2px; text-decoration: underline; font-size: 1.05em; }
-        
         .loading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.9); z-index: 100; display: none; flex-direction: column; justify-content: center; align-items: center; }
         .loader { width: 50px; height: 50px; border: 5px solid #FFF; border-bottom-color: #3b82f6; border-radius: 50%; animation: rotation 1s linear infinite; }
         @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -32,7 +29,7 @@
 <body class="flex items-center justify-center p-4 pt-24">
 
     <div class="header-banner"><img src="logo.png" alt="Logo" class="header-logo"><span class="text-white font-bold text-xs md:text-sm tracking-widest">翻譯泡芙學院 | 苑程有限公司</span></div>
-    <div id="loadingOverlay" class="loading-overlay"><span class="loader mb-4"></span><p id="loadingText" class="text-white text-sm tracking-widest">正在安全處理中...</p></div>
+    <div id="loadingOverlay" class="loading-overlay"><span class="loader mb-4"></span><p id="loadingText" class="text-white text-sm tracking-widest">系統處理中...</p></div>
 
     <div class="w-full max-w-2xl">
         <div id="step1" class="glass-card rounded-3xl p-8 md:p-12 fade-in">
@@ -41,7 +38,7 @@
                 <div><label class="block text-blue-200 text-xs font-bold mb-1">上課日期 (例如: 0117)</label><input type="text" id="inputDate" maxlength="4" required class="glass-input" oninput="this.value=this.value.replace(/[^0-9]/g,'')" placeholder="0000"></div>
                 <div><label class="block text-blue-200 text-xs font-bold mb-1">真實姓名 (Full Name)</label><input type="text" id="inputName" required class="glass-input" placeholder="姓名"></div>
                 <div>
-                    <div class="flex justify-between items-center mb-1"><label class="text-blue-200 text-xs font-bold">身分證字號</label><label class="text-blue-400 text-[11px] flex items-center cursor-pointer"><input type="checkbox" id="isOverseas" class="mr-1">海外人士</label></div>
+                    <div class="flex justify-between items-center mb-1"><label class="text-blue-200 text-xs font-bold">身分證 / 證件號碼</label><label class="text-blue-400 text-[11px] flex items-center cursor-pointer"><input type="checkbox" id="isOverseas" class="mr-1">海外人士(護照)</label></div>
                     <input type="text" id="inputID" maxlength="10" required class="glass-input uppercase" placeholder="A123456789">
                 </div>
                 <div><label class="block text-blue-200 text-xs font-bold mb-1">聯絡電話 (最多 10 碼)</label><input type="tel" id="inputPhone" maxlength="10" required class="glass-input" oninput="this.value=this.value.replace(/[^0-9]/g,'')" placeholder="09xxxxxxxx"></div>
@@ -60,7 +57,7 @@
             <div class="border-t-2 border-gray-900 pt-8 space-y-6">
                 <p class="font-bold text-lg">立書人(乙方)：<span id="displayName" class="highlight-bold"></span></p>
                 <div><label class="block text-sm font-black text-gray-900 mb-2 underline">請在此簽名 (Signature)： *</label><canvas id="signatureCanvas"></canvas><button type="button" id="clearBtn" class="mt-2 text-xs text-gray-400 font-bold hover:text-red-500 transition">CLEAR / 清除重簽</button></div>
-                <button id="finalSubmitBtn" class="w-full bg-black hover:bg-gray-800 text-white font-black py-5 rounded-sm shadow-2xl text-xl mt-6 tracking-widest transition-all">完成數位簽署並寄送副本</button>
+                <button id="finalSubmitBtn" class="w-full bg-black hover:bg-gray-800 text-white font-black py-5 rounded-sm shadow-2xl text-xl mt-6 tracking-widest transition-all">同意協議並完成數位簽署</button>
             </div>
         </div>
     </div>
@@ -81,9 +78,19 @@
 
         const isOverseas = document.getElementById('isOverseas');
         const inputID = document.getElementById('inputID');
+        
+        // 💡 修正：海外人士切換邏輯
         isOverseas.onchange = function() {
-            inputID.value = ""; inputID.placeholder = this.checked ? "護照或證件號碼" : "A123456789";
-            if (this.checked) inputID.removeAttribute('maxlength'); else inputID.setAttribute('maxlength', '10');
+            inputID.value = ""; 
+            if (this.checked) {
+                inputID.placeholder = "請輸入護照或證件號碼";
+                inputID.removeAttribute('maxlength'); // 海外模式：解除 10 碼限制
+                inputID.classList.remove('uppercase');
+            } else {
+                inputID.placeholder = "A123456789";
+                inputID.setAttribute('maxlength', '10'); // 台灣模式：鎖定 10 碼
+                inputID.classList.add('uppercase');
+            }
         };
 
         const canvas = document.getElementById('signatureCanvas');
@@ -94,8 +101,9 @@
             canvas.getContext("2d").scale(ratio, ratio); signaturePad.clear();
         }
 
+        // 💡 修正：身分證檢查邏輯
         function validateID(id) {
-            if (isOverseas.checked) return id.length >= 5;
+            if (isOverseas.checked) return id.length >= 3; // 海外人士只要有填（大於3碼）就過
             if (!/^[A-Z][1-2]\d{8}$/.test(id)) return false;
             const map = {A:10,B:11,C:12,D:13,E:14,F:15,G:16,H:17,J:18,K:19,L:20,M:21,N:22,P:23,Q:24,R:25,S:26,T:27,U:28,V:29,X:30,Y:31,W:32,Z:33,I:34,O:35};
             const n = map[id[0]], x1 = Math.floor(n/10), x2 = n%10, d = id.slice(1).split('').map(Number);
@@ -105,7 +113,11 @@
 
         document.getElementById('infoForm').onsubmit = function(e) {
             e.preventDefault();
-            if (!validateID(inputID.value.trim().toUpperCase())) { Swal.fire({ icon: 'error', title: '格式錯誤', text: '請輸入正確的身分證或證件號碼' }); return; }
+            const idValue = inputID.value.trim().toUpperCase();
+            if (!validateID(idValue)) { 
+                Swal.fire({ icon: 'error', title: '格式錯誤', text: isOverseas.checked ? '請輸入有效的證件號碼' : '請輸入正確的台灣身分證字號' }); 
+                return; 
+            }
             document.getElementById('loadingOverlay').style.display = 'flex';
             if (isDataLoaded) proceedToStep2(); else isWaiting = true;
         };
@@ -122,7 +134,7 @@
             const now = new Date(); const rocY = now.getFullYear() - 1911;
 
             pText = pText.replace(/{{Name}}/g, bold(document.getElementById('inputName').value, 'namePrev'))
-                         .replace(/{{ID}}/g, bold(document.getElementById('inputID').value, 'idPrev'))
+                         .replace(/{{ID}}/g, bold(inputID.value.toUpperCase(), 'idPrev'))
                          .replace(/{{Phone}}/g, bold(document.getElementById('inputPhone').value, 'phonePrev'))
                          .replace(/{{Email}}/g, bold(document.getElementById('inputEmail').value, 'emailPrev'))
                          .replace(/{{Address}}/g, bold("尚未填寫", 'addrLivePrev'))
@@ -153,7 +165,7 @@
             const payload = {
                 courseDate: document.getElementById('inputDate').value,
                 name: document.getElementById('inputName').value,
-                id: inputID.value, phone: document.getElementById('inputPhone').value,
+                id: inputID.value.toUpperCase(), phone: document.getElementById('inputPhone').value,
                 email: document.getElementById('inputEmail').value, address: address,
                 signature_base64: signaturePad.toDataURL()
             };
@@ -162,7 +174,7 @@
                 const result = await res.json();
                 document.getElementById('loadingOverlay').style.display = 'none';
                 if (result.status === 'success') {
-                    Swal.fire({ icon: 'success', title: '簽署完成', text: '合約副本已寄至您的信箱，感謝您的配合！' }).then(() => location.reload());
+                    Swal.fire({ icon: 'success', title: '簽署完成', text: '合約副本已寄送至您的信箱，感謝您的配合！' }).then(() => location.reload());
                 } else throw new Error(result.message);
             } catch (e) {
                 document.getElementById('loadingOverlay').style.display = 'none';
